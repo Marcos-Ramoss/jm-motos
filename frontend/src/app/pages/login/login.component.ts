@@ -16,13 +16,20 @@ export class LoginComponent {
   private authService = inject(AuthService);
   private router = inject(Router);
 
+  showPassword = false;
+
   form = this.fb.group({
     email: ['admin@jmmotos.com.br', [Validators.required, Validators.email]],
-    senha: ['admin123', [Validators.required]]
+    senha: ['admin123', [Validators.required]],
+    lembrarDispositivo: [true]
   });
 
   loading = false;
   errorMessage = '';
+
+  togglePasswordVisibility(): void {
+    this.showPassword = !this.showPassword;
+  }
 
   onSubmit(): void {
     if (this.form.invalid) return;

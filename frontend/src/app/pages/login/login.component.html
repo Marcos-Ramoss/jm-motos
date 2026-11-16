@@ -1,73 +1,117 @@
-<div class="login-wrapper">
-  <!-- Aurora Horizon Glow inspirada no mockup -->
-  <div class="login-aurora"></div>
-
-  <div class="login-card">
-    <div class="login-header">
-      <div class="brand-pill">
+<div class="login-split-page">
+  <!-- Coluna Esquerda: Hero Brand & Cyber Grid -->
+  <div class="hero-column">
+    <div class="hero-top">
+      <div class="hero-pill">
         <span class="pill-dot"></span>
-        <span>Plataforma Inteligente de Frotas</span>
+        <span>GESTÃO DE FROTAS & RENT-TO-OWN</span>
       </div>
-      <div class="logo-glow">
-        <span class="logo-icon">🏍️</span>
-      </div>
-      <h2>Amaz<span class="text-emerald">Mob</span></h2>
-      <p>Gestão Operacional de Frotas & Rent-to-Own</p>
     </div>
 
-    @if (errorMessage) {
-      <div class="alert alert-danger">
-        {{ errorMessage }}
-      </div>
-    }
+    <div class="hero-center">
+      <h1 class="hero-title">
+        Amaz<span class="hero-highlight">Mob</span>
+      </h1>
+      <p class="hero-description">
+        O ecossistema inteligente de gestão de frotas, telemetria em tempo real e planos de aquisição Rent-to-Own. Gerencie diárias, vistorias e a conquista da moto própria em um só lugar.
+      </p>
+    </div>
 
-    <form [formGroup]="form" (ngSubmit)="onSubmit()">
-      <div class="form-group">
-        <label class="form-label">E-mail Operacional</label>
-        <input
-          type="email"
-          formControlName="email"
-          class="form-control"
-          placeholder="admin@jmmotos.com.br"
-        />
-        @if (form.get('email')?.touched && form.get('email')?.invalid) {
-          <small class="text-danger">E-mail corporativo válido é obrigatório</small>
-        }
-      </div>
+    <div class="hero-footer">
+      <p>© 2026 AmazMob. Todos os direitos reservados.</p>
+    </div>
+  </div>
 
-      <div class="form-group">
-        <label class="form-label">Senha de Acesso</label>
-        <input
-          type="password"
-          formControlName="senha"
-          class="form-control"
-          placeholder="••••••••"
-        />
-        @if (form.get('senha')?.touched && form.get('senha')?.invalid) {
-          <small class="text-danger">A senha é obrigatória</small>
-        }
+  <!-- Coluna Direita: Formulário de Autenticação -->
+  <div class="auth-column">
+    <div class="auth-box">
+      <!-- Logo / Emblema -->
+      <div class="auth-logo-wrapper">
+        <div class="auth-logo-emblem">
+          <span class="logo-emoji">🏍️</span>
+        </div>
       </div>
 
-      <button
-        type="submit"
-        class="btn btn-primary btn-block"
-        [disabled]="form.invalid || loading"
-      >
-        {{ loading ? 'Autenticando...' : 'Acessar Plataforma' }}
-      </button>
-    </form>
+      <!-- Títulos -->
+      <h2 class="auth-title">Acesso Restrito</h2>
+      <p class="auth-subtitle">Insira suas credenciais para acessar o painel de controle.</p>
 
-    <div class="quick-access">
-      <p class="quick-title">Credenciais Rápidas de Acesso:</p>
-      <div class="quick-buttons">
-        <button (click)="fillCredentials('admin@jmmotos.com.br', 'admin123')" class="btn btn-outline btn-sm">
-          👑 Administrador
+      <!-- Alerta de Erro -->
+      @if (errorMessage) {
+        <div class="alert alert-danger mb-4">
+          {{ errorMessage }}
+        </div>
+      }
+
+      <!-- Formulário -->
+      <form [formGroup]="form" (ngSubmit)="onSubmit()" class="auth-form">
+        <div class="form-group mb-4">
+          <label class="form-label">E-mail corporativo</label>
+          <input
+            type="email"
+            formControlName="email"
+            class="form-control"
+            placeholder="admin@jmmotos.com.br"
+          />
+          @if (form.get('email')?.touched && form.get('email')?.invalid) {
+            <small class="text-danger">E-mail corporativo válido é obrigatório</small>
+          }
+        </div>
+
+        <div class="form-group mb-4">
+          <label class="form-label">Senha</label>
+          <div class="password-input-wrapper">
+            <input
+              [type]="showPassword ? 'text' : 'password'"
+              formControlName="senha"
+              class="form-control"
+              placeholder="••••••••••••"
+            />
+            <button
+              type="button"
+              class="btn-toggle-password"
+              (click)="togglePasswordVisibility()"
+              tabindex="-1"
+              [title]="showPassword ? 'Ocultar senha' : 'Exibir senha'"
+            >
+              {{ showPassword ? '👁️' : '👁️‍🗨️' }}
+            </button>
+          </div>
+          @if (form.get('senha')?.touched && form.get('senha')?.invalid) {
+            <small class="text-danger">A senha é obrigatória</small>
+          }
+        </div>
+
+        <div class="form-options mb-4">
+          <label class="checkbox-container">
+            <input type="checkbox" formControlName="lembrarDispositivo" />
+            <span class="checkmark"></span>
+            <span class="checkbox-label">Lembrar neste dispositivo</span>
+          </label>
+        </div>
+
+        <button
+          type="submit"
+          class="btn-auth-submit"
+          [disabled]="form.invalid || loading"
+        >
+          <span>{{ loading ? 'Entrando no painel...' : 'Entrar no painel' }}</span>
+          <span class="arrow-icon">→</span>
         </button>
-        <button (click)="fillCredentials('operador@jmmotos.com.br', 'admin123')" class="btn btn-outline btn-sm">
-          🛠️ Operador
-        </button>
+      </form>
+
+      <!-- Acesso Rápido para Operadores / Testes -->
+      <div class="quick-access">
+        <p class="quick-title">Credenciais Rápidas de Acesso:</p>
+        <div class="quick-buttons">
+          <button (click)="fillCredentials('admin@jmmotos.com.br', 'admin123')" class="btn btn-outline btn-sm">
+            👑 Administrador
+          </button>
+          <button (click)="fillCredentials('operador@jmmotos.com.br', 'admin123')" class="btn btn-outline btn-sm">
+            🛠️ Operador
+          </button>
+        </div>
       </div>
     </div>
   </div>
 </div>
-
