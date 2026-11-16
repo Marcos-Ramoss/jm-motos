@@ -35,3 +35,9 @@ yarn-error.log*
 .DS_Store
 Thumbs.db
 
+docs/ARQUITETURA.md
+docs/CONTEXTO_E_REQUISITOS_GESTAO_FROTA.md
+docs/PENDENCIAS.md
+docs/PROMPT_ANTIGRAVITY_GESTAO_FROTA.md
+docs/REGRAS_DE_NEGOCIO.md
+docs/ROADMAP.md
