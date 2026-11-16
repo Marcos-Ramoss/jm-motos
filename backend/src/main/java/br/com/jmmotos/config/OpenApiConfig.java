@@ -17,10 +17,10 @@ public class OpenApiConfig {
         final String securitySchemeName = "bearerAuth";
         return new OpenAPI()
                 .info(new Info()
-                        .title("JM Motos API — Gestão de Frota e Locação Rent-to-Own")
+                        .title("AmazMob API — Gestão de Frota e Locação Rent-to-Own")
                         .version("1.0.0")
                         .description("API REST para operação de locação de motos, planos diários e semanais, gestão de pagamentos, cauções e acompanhamento de progresso de aquisição.")
-                        .contact(new Contact().name("JM Motos").email("contato@jmmotos.com.br")))
+                        .contact(new Contact().name("AmazMob (Jhon & Marcos Motos)").email("contato@amazmob.com.br")))
                 .addSecurityItem(new SecurityRequirement().addList(securitySchemeName))
                 .components(new Components()
                         .addSecuritySchemes(securitySchemeName,
