@@ -1,0 +1,116 @@
+<div class="rastreamento-page">
+  <div class="page-header">
+    <div>
+      <div class="cyber-pill">
+        <span class="pill-glow-dot"></span>
+        <span>Módulo de Telemetria e Localização</span>
+      </div>
+      <h1 class="page-title">Rastreamento GPS da Frota</h1>
+      <p class="page-subtitle">Monitoramento de conectividade de rastreadores físicos e integrador Traccar</p>
+    </div>
+  </div>
+
+  <!-- Radar Cyber Grid inspirado no globo da imagem de referência -->
+  <div class="radar-card mb-6">
+    <div class="radar-visual">
+      <div class="radar-circle radar-outer"></div>
+      <div class="radar-circle radar-mid"></div>
+      <div class="radar-circle radar-inner"></div>
+      <div class="radar-sweep"></div>
+      <div class="radar-center-dot"></div>
+      <div class="radar-satellite-tag">Satélites GPS: Standby</div>
+    </div>
+    <div class="radar-info">
+      <div class="flex items-center gap-2 mb-2">
+        <span class="badge badge-warning">Aguardando Hardware</span>
+        <span class="badge badge-muted">Protocolo Traccar</span>
+      </div>
+      <h2 class="card-title text-xl text-white">Status da Conexão: Provedor Não Configurado</h2>
+      <p class="text-muted text-sm mb-4">
+        {{ trackingData?.mensagem }}
+      </p>
+      <div class="alert alert-info mb-0">
+        <strong>Instruções de Pareamento Técnico:</strong>
+        <p class="text-xs mt-1">
+          {{ trackingData?.instrucoesIntegracao }}
+        </p>
+      </div>
+    </div>
+  </div>
+
+  <!-- Lista de Veículos e Situação de Telemetria -->
+  <div class="card mb-6">
+    <div class="card-header">
+      <div>
+        <h3 class="card-title">Dispositivos Vinculados à Frota</h3>
+        <p class="text-dim text-xs">Motos registradas no sistema com checagem de telemetria</p>
+      </div>
+      <span class="badge badge-muted">0 Dispositivos Pareados</span>
+    </div>
+    <div class="table-responsive">
+      <table class="table">
+        <thead>
+          <tr>
+            <th>Placa</th>
+            <th>Modelo</th>
+            <th>Situação Operacional</th>
+            <th>Sinal do Rastreador</th>
+            <th>Última Transmissão</th>
+            <th>Coordenadas Geográficas</th>
+          </tr>
+        </thead>
+        <tbody>
+          @if (loading) {
+            @for (item of [1, 2, 3]; track item) {
+              <tr>
+                <td colspan="6">
+                  <div class="skeleton skeleton-text" style="width: 100%; height: 24px;"></div>
+                </td>
+              </tr>
+            }
+          } @else if (!trackingData?.motocicletas?.length) {
+            <tr>
+              <td colspan="6" class="text-center py-6 text-muted">
+                Nenhuma motocicleta vinculada no momento.
+              </td>
+            </tr>
+          } @else {
+            @for (m of trackingData?.motocicletas; track m.motoId) {
+              <tr>
+                <td>
+                  <span class="plate-badge">{{ m.placa }}</span>
+                </td>
+                <td>{{ m.modelo }}</td>
+                <td>
+                  <span class="badge badge-muted">{{ m.statusOperacional }}</span>
+                </td>
+                <td>
+                  <span class="badge badge-warning">
+                    {{ m.statusRastreador }}
+                  </span>
+                </td>
+                <td class="text-dim text-xs">
+                  {{ m.ultimaComunicacao }}
+                </td>
+                <td class="text-dim text-xs">
+                  <em>Sem coordenadas simuladas (Segurança)</em>
+                </td>
+              </tr>
+            }
+          }
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <!-- Nota de Segurança e LGPD -->
+  <div class="card legal-card">
+    <h4 class="text-sm font-bold text-emerald uppercase mb-2">🔒 Segurança Viária, Limites Legais e LGPD</h4>
+    <ul class="legal-notes text-xs text-muted">
+      <li><strong>Bloqueio remoto com veículo em trânsito é estritamente proibido:</strong> A aplicação não executa corte de ignição ou parada súbita de motor por atrasos financeiros ou saída de cercas geográficas, em cumprimento às normas de segurança viária.</li>
+      <li><strong>Minimização de Dados (LGPD):</strong> O histórico de trajetos constitui dado sensível e será visível apenas por operadores credenciados mediante autenticação forte.</li>
+      <li><strong>Auditoria em Nuvem:</strong> Toda consulta de posicionamento registrará carimbo de data/hora UTC e a identificação do operador requisitante.</li>
+    </ul>
+  </div>
+</div>
+

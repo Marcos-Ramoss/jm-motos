@@ -1,0 +1,231 @@
+<div class="dashboard-page">
+  <!-- Cabeçalho com Abas Cyber no Estilo do Mockup -->
+  <div class="dashboard-top-row">
+    <div>
+      <div class="cyber-pill">
+        <span class="pill-glow-dot"></span>
+        <span>Centro de Comando Operacional</span>
+      </div>
+      <h1 class="page-title">Painel de Controle</h1>
+      <p class="page-subtitle">Métricas em tempo real da frota e contas da JM Motos</p>
+    </div>
+    
+    <div class="top-controls">
+      <div class="filter-tabs">
+        <button class="tab-btn active">Visão Geral</button>
+        <button class="tab-btn">Rent-to-Own</button>
+        <button class="tab-btn">Financeiro</button>
+      </div>
+      <button (click)="loadData()" class="btn btn-outline btn-sm" [disabled]="loading">
+        <span>🔄</span> Atualizar
+      </button>
+    </div>
+  </div>
+
+  <!-- Alerta GPS Transparente com Borda Cyber -->
+  <div class="alert alert-warning cyber-alert">
+    <span class="alert-icon">⚠️</span>
+    <div class="alert-content">
+      <strong>Hardware de Rastreamento GPS Pendente:</strong>
+      Nenhum dispositivo físico ou servidor Traccar está conectado no momento. Seguindo os princípios de segurança, nenhuma posição fictícia é gerada.
+      <a routerLink="/rastreamento" class="alert-link">Guia de homologação de rastreadores</a>.
+    </div>
+  </div>
+
+  <!-- Grid de Indicadores Principais (Stat Cards com Efeito Neon) -->
+  <div class="stats-grid">
+    <!-- Card 1: Frota Total -->
+    <div class="card stat-card">
+      <div class="stat-header">
+        <span class="stat-label">Frota de Motocicletas</span>
+        <div class="stat-icon-glow">
+          <span>🛵</span>
+        </div>
+      </div>
+      @if (loading) {
+        <div class="skeleton skeleton-text" style="width: 50%; height: 32px;"></div>
+        <div class="skeleton skeleton-text" style="width: 80%;"></div>
+      } @else {
+        <div class="stat-value">{{ summary?.totalMotos || 0 }}</div>
+        <div class="stat-breakdown">
+          <span class="badge badge-success">{{ summary?.motosDisponiveis || 0 }} Livres</span>
+          <span class="badge badge-primary">{{ summary?.motosAlugadas || 0 }} Alugadas</span>
+          <span class="badge badge-warning">{{ summary?.motosEmManutencao || 0 }} Oficina</span>
+        </div>
+      }
+    </div>
+
+    <!-- Card 2: Contratos Ativos & Rent-to-Own -->
+    <div class="card stat-card">
+      <div class="stat-header">
+        <span class="stat-label">Contratos Ativos</span>
+        <div class="stat-icon-glow">
+          <span>📑</span>
+        </div>
+      </div>
+      @if (loading) {
+        <div class="skeleton skeleton-text" style="width: 50%; height: 32px;"></div>
+        <div class="skeleton skeleton-text" style="width: 80%;"></div>
+      } @else {
+        <div class="stat-value">{{ summary?.contratosAtivos || 0 }}</div>
+        <div class="rent-to-own-progress">
+          <div class="progress-info">
+            <span>Progresso Médio Rent-to-Own:</span>
+            <strong>{{ summary?.progressoMedioRentToOwn || 0 }}%</strong>
+          </div>
+          <div class="progress-container">
+            <div class="progress-bar" [style.width.%]="summary?.progressoMedioRentToOwn || 0"></div>
+          </div>
+        </div>
+      }
+    </div>
+
+    <!-- Card 3: Receita Realizada (Caixa) -->
+    <div class="card stat-card">
+      <div class="stat-header">
+        <span class="stat-label">Receita Realizada (Caixa)</span>
+        <div class="stat-icon-glow">
+          <span>💰</span>
+        </div>
+      </div>
+      @if (loading) {
+        <div class="skeleton skeleton-text" style="width: 50%; height: 32px;"></div>
+        <div class="skeleton skeleton-text" style="width: 80%;"></div>
+      } @else {
+        <div class="stat-value text-emerald">
+          R$ {{ (summary?.totalReceitaRealizada || 0) | number:'1.2-2' }}
+        </div>
+        <span class="stat-sub">Total confirmado em caixa operacional</span>
+      }
+    </div>
+
+    <!-- Card 4: A Receber & Atrasos -->
+    <div class="card stat-card">
+      <div class="stat-header">
+        <span class="stat-label">A Receber / Em Atraso</span>
+        <div class="stat-icon-glow">
+          <span>⏳</span>
+        </div>
+      </div>
+      @if (loading) {
+        <div class="skeleton skeleton-text" style="width: 50%; height: 32px;"></div>
+        <div class="skeleton skeleton-text" style="width: 80%;"></div>
+      } @else {
+        <div class="stat-value">
+          R$ {{ (summary?.totalAReceber || 0) | number:'1.2-2' }}
+        </div>
+        <div class="stat-breakdown">
+          @if ((summary?.cobrancasAtrasadasCount || 0) > 0) {
+            <span class="badge badge-danger">
+              {{ summary?.cobrancasAtrasadasCount }} atrasada(s) (R$ {{ (summary?.totalEmAtraso || 0) | number:'1.2-2' }})
+            </span>
+          } @else {
+            <span class="badge badge-success">✓ Zero inadimplência</span>
+          }
+        </div>
+      }
+    </div>
+  </div>
+
+  <!-- Gráfico Cyber e Visão Financeira (Inspirado no Bloco do Mockup) -->
+  <div class="dashboard-chart-row">
+    <!-- Gráfico de Performance Operacional -->
+    <div class="card chart-card">
+      <div class="card-header">
+        <div>
+          <h2 class="card-title">📈 Faturamento Operacional Recente</h2>
+          <p class="chart-subtitle">Evolução dos recebíveis de locação e taxas de aquisição</p>
+        </div>
+        <span class="badge badge-success">Semanal</span>
+      </div>
+
+      <!-- Gráfico de Barras Estilo Cyber Mockup -->
+      <div class="chart-bars-container">
+        <div class="bar-col">
+          <div class="bar-fill" style="height: 35%;"></div>
+          <span class="bar-label">Sem 1</span>
+        </div>
+        <div class="bar-col">
+          <div class="bar-fill" style="height: 55%;"></div>
+          <span class="bar-label">Sem 2</span>
+        </div>
+        <div class="bar-col">
+          <div class="bar-fill" style="height: 40%;"></div>
+          <span class="bar-label">Sem 3</span>
+        </div>
+        <div class="bar-col">
+          <div class="bar-fill" style="height: 70%;"></div>
+          <span class="bar-label">Sem 4</span>
+        </div>
+        <div class="bar-col">
+          <div class="bar-fill" style="height: 85%;"></div>
+          <span class="bar-label">Sem 5</span>
+        </div>
+        <div class="bar-col">
+          <div class="bar-fill active" style="height: 100%;"></div>
+          <span class="bar-label">Atual</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Card de Cauções em Custódia Segregada -->
+    <div class="card caucao-card">
+      <div class="card-header">
+        <h2 class="card-title">🛡️ Cauções em Custódia</h2>
+        <span class="badge badge-info">Conta Segregada</span>
+      </div>
+      <p class="section-desc">
+        Valores retidos como depósito de garantia contratual. Mantidos em razão separada e <strong>não compõem o faturamento</strong> da empresa.
+      </p>
+      <div class="caucao-box-glow">
+        <div class="caucao-label">Total sob custódia:</div>
+        <div class="caucao-amount">
+          R$ {{ (summary?.totalCaucaoCustodia || 0) | number:'1.2-2' }}
+        </div>
+        <div class="caucao-sub">Protegido para restituição ou quitação</div>
+      </div>
+      <a routerLink="/cobrancas" class="btn btn-outline btn-block">
+        Ver Livro Auxiliar de Cauções
+      </a>
+    </div>
+  </div>
+
+  <!-- Atalhos Operacionais -->
+  <div class="card quick-actions-card">
+    <div class="card-header">
+      <h2 class="card-title">⚡ Ações Operacionais Rápidas</h2>
+      <span class="badge badge-muted">Atalhos</span>
+    </div>
+    <div class="quick-actions-grid">
+      <a routerLink="/motos" class="action-btn">
+        <div class="action-icon-box">🛵</div>
+        <div>
+          <strong>Cadastrar Motocicleta</strong>
+          <small>Adicionar nova unidade à frota</small>
+        </div>
+      </a>
+      <a routerLink="/clientes" class="action-btn">
+        <div class="action-icon-box">👤</div>
+        <div>
+          <strong>Novo Cliente</strong>
+          <small>Cadastrar locatário com CNH</small>
+        </div>
+      </a>
+      <a routerLink="/contratos" class="action-btn">
+        <div class="action-icon-box">📝</div>
+        <div>
+          <strong>Emitir Contrato</strong>
+          <small>Plano Semanal ou Diário</small>
+        </div>
+      </a>
+      <a routerLink="/cobrancas" class="action-btn">
+        <div class="action-icon-box">💵</div>
+        <div>
+          <strong>Baixar Pagamento</strong>
+          <small>Liquidar fatura ou registrar Pix</small>
+        </div>
+      </a>
+    </div>
+  </div>
+</div>
+

@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
-import { TrackingStatus } from '../models/models';
+import { TrackingStatus } from '../models/tracking-status.model';
 
 @Injectable({
   providedIn: 'root'

@@ -1,7 +1,10 @@
 import { Injectable } from '@angular/core';
 import { HttpClient, HttpParams } from '@angular/common/http';
 import { Observable } from 'rxjs';
-import { CaucaoMovimento, Cobranca, Page, Pagamento } from '../models/models';
+import { Cobranca } from '../models/cobranca.model';
+import { CaucaoMovimento } from '../models/caucao-movimento.model';
+import { Pagamento } from '../models/pagamento.model';
+import { Page } from '../models/page.model';
 
 @Injectable({
   providedIn: 'root'

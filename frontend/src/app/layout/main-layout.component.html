@@ -1,0 +1,104 @@
+<div class="app-container">
+  <!-- Sidebar Desktop Cyber Emerald -->
+  <aside class="sidebar-desktop">
+    <div class="brand">
+      <div class="brand-logo-glow">
+        <span class="brand-icon">🏍️</span>
+      </div>
+      <div>
+        <div class="brand-title">JM MOTOS</div>
+        <div class="brand-subtitle">Smart Fleet & Rent-to-Own</div>
+      </div>
+    </div>
+
+    <nav class="nav-menu">
+      <a routerLink="/dashboard" routerLinkActive="active" class="nav-item">
+        <span class="nav-icon">📊</span>
+        <span>Dashboard</span>
+      </a>
+      <a routerLink="/motos" routerLinkActive="active" class="nav-item">
+        <span class="nav-icon">🛵</span>
+        <span>Motocicletas</span>
+      </a>
+      <a routerLink="/clientes" routerLinkActive="active" class="nav-item">
+        <span class="nav-icon">👥</span>
+        <span>Clientes</span>
+      </a>
+      <a routerLink="/contratos" routerLinkActive="active" class="nav-item">
+        <span class="nav-icon">📑</span>
+        <span>Contratos</span>
+      </a>
+      <a routerLink="/cobrancas" routerLinkActive="active" class="nav-item">
+        <span class="nav-icon">💳</span>
+        <span>Cobranças & Caixa</span>
+      </a>
+      <a routerLink="/rastreamento" routerLinkActive="active" class="nav-item">
+        <span class="nav-icon">📍</span>
+        <span>Rastreamento GPS</span>
+      </a>
+    </nav>
+
+    <div class="sidebar-footer">
+      <div class="user-card">
+        <div class="user-avatar">
+          {{ authService.currentUser()?.nome?.charAt(0) || 'U' }}
+        </div>
+        <div class="user-info">
+          <div class="user-name">{{ authService.currentUser()?.nome || 'Operador' }}</div>
+          <div class="user-role">{{ authService.currentUser()?.perfil || 'ADMIN' }}</div>
+        </div>
+      </div>
+      <button (click)="logout()" class="btn-logout" title="Sair da aplicação">
+        Sair 🚪
+      </button>
+    </div>
+  </aside>
+
+  <!-- Conteúdo Principal -->
+  <main class="main-content">
+    <div class="horizon-glow"></div>
+
+    <!-- Header Mobile / Topbar -->
+    <header class="topbar-mobile">
+      <div class="brand-mobile">
+        <div class="brand-logo-glow-sm">
+          <span class="brand-icon-sm">🏍️</span>
+        </div>
+        <span class="brand-title">JM MOTOS</span>
+      </div>
+      <div class="topbar-actions">
+        <span class="badge badge-success">{{ authService.currentUser()?.perfil }}</span>
+        <button (click)="logout()" class="btn btn-outline btn-sm">Sair</button>
+      </div>
+    </header>
+
+    <div class="content-body">
+      <router-outlet></router-outlet>
+    </div>
+
+    <!-- Bottom Navigation Mobile (Mobile-first UX) -->
+    <nav class="bottom-nav-mobile">
+      <a routerLink="/dashboard" routerLinkActive="active" class="bottom-nav-item">
+        <span>📊</span>
+        <small>Dashboard</small>
+      </a>
+      <a routerLink="/motos" routerLinkActive="active" class="bottom-nav-item">
+        <span>🛵</span>
+        <small>Motos</small>
+      </a>
+      <a routerLink="/contratos" routerLinkActive="active" class="bottom-nav-item">
+        <span>📑</span>
+        <small>Contratos</small>
+      </a>
+      <a routerLink="/cobrancas" routerLinkActive="active" class="bottom-nav-item">
+        <span>💳</span>
+        <small>Cobranças</small>
+      </a>
+      <a routerLink="/rastreamento" routerLinkActive="active" class="bottom-nav-item">
+        <span>📍</span>
+        <small>GPS</small>
+      </a>
+    </nav>
+  </main>
+</div>
+
