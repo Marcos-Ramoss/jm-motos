@@ -1,0 +1,25 @@
+spring:
+  datasource:
+    url: jdbc:h2:mem:jmmotos_test;MODE=PostgreSQL;DATABASE_TO_LOWER=TRUE;DEFAULT_NULL_ORDERING=HIGH;DB_CLOSE_DELAY=-1;INIT=CREATE SCHEMA IF NOT EXISTS jm_motos
+    driver-class-name: org.h2.Driver
+    username: sa
+    password:
+  jpa:
+    hibernate:
+      ddl-auto: create-drop
+    open-in-view: false
+    show-sql: false
+    properties:
+      hibernate:
+        default_schema: jm_motos
+        format_sql: false
+  flyway:
+    enabled: false
+
+app:
+  jwt:
+    secret: 404E635266556A586E3272357538782F413F4428472B4B6250645367566B5970
+    expiration-ms: 86400000
+  cors:
+    allowed-origins: http://localhost:4200
+  timezone: America/Manaus
