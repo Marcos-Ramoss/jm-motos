@@ -23,11 +23,28 @@ public interface MotocicletaRepository extends JpaRepository<Motocicleta, Long> 
 
     List<Motocicleta> findByStatusOperacional(StatusOperacional statusOperacional);
 
+    Page<Motocicleta> findByStatusOperacional(StatusOperacional statusOperacional, Pageable pageable);
+
     @Query("SELECT m FROM Motocicleta m WHERE " +
-           "(:busca IS NULL OR LOWER(m.placa) LIKE LOWER(CONCAT('%', :busca, '%')) OR LOWER(m.modelo) LIKE LOWER(CONCAT('%', :busca, '%')) OR LOWER(m.marca) LIKE LOWER(CONCAT('%', :busca, '%'))) AND " +
-           "(:status IS NULL OR m.statusOperacional = :status)")
-    Page<Motocicleta> findWithFilters(@Param("busca") String busca, @Param("status") StatusOperacional status, Pageable pageable);
+           "(LOWER(m.placa) LIKE :busca OR LOWER(m.modelo) LIKE :busca OR LOWER(m.marca) LIKE :busca)")
+    Page<Motocicleta> findByBusca(@Param("busca") String busca, Pageable pageable);
+
+    @Query("SELECT m FROM Motocicleta m WHERE " +
+           "(LOWER(m.placa) LIKE :busca OR LOWER(m.modelo) LIKE :busca OR LOWER(m.marca) LIKE :busca) AND " +
+           "m.statusOperacional = :status")
+    Page<Motocicleta> findByBuscaAndStatus(@Param("busca") String busca, @Param("status") StatusOperacional status, Pageable pageable);
+
+    default Page<Motocicleta> findWithFilters(String busca, StatusOperacional status, Pageable pageable) {
+        if (busca != null && !busca.isBlank() && status != null) {
+            return findByBuscaAndStatus("%" + busca.trim().toLowerCase() + "%", status, pageable);
+        } else if (busca != null && !busca.isBlank()) {
+            return findByBusca("%" + busca.trim().toLowerCase() + "%", pageable);
+        } else if (status != null) {
+            return findByStatusOperacional(status, pageable);
+        } else {
+            return findAll(pageable);
+        }
+    }
 
     long countByStatusOperacional(StatusOperacional statusOperacional);
 }
-

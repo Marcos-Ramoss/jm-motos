@@ -24,11 +24,28 @@ public interface ContratoLocacaoRepository extends JpaRepository<ContratoLocacao
 
     List<ContratoLocacao> findByMotocicletaId(Long motocicletaId);
 
+    Page<ContratoLocacao> findByStatus(ContratoStatus status, Pageable pageable);
+
     @Query("SELECT c FROM ContratoLocacao c WHERE " +
-           "(:busca IS NULL OR LOWER(c.numeroContrato) LIKE LOWER(CONCAT('%', :busca, '%')) OR LOWER(c.cliente.nome) LIKE LOWER(CONCAT('%', :busca, '%')) OR LOWER(c.motocicleta.placa) LIKE LOWER(CONCAT('%', :busca, '%'))) AND " +
-           "(:status IS NULL OR c.status = :status)")
-    Page<ContratoLocacao> findWithFilters(@Param("busca") String busca, @Param("status") ContratoStatus status, Pageable pageable);
+           "(LOWER(c.numeroContrato) LIKE :busca OR LOWER(c.cliente.nome) LIKE :busca OR LOWER(c.motocicleta.placa) LIKE :busca)")
+    Page<ContratoLocacao> findByBusca(@Param("busca") String busca, Pageable pageable);
+
+    @Query("SELECT c FROM ContratoLocacao c WHERE " +
+           "(LOWER(c.numeroContrato) LIKE :busca OR LOWER(c.cliente.nome) LIKE :busca OR LOWER(c.motocicleta.placa) LIKE :busca) AND " +
+           "c.status = :status")
+    Page<ContratoLocacao> findByBuscaAndStatus(@Param("busca") String busca, @Param("status") ContratoStatus status, Pageable pageable);
+
+    default Page<ContratoLocacao> findWithFilters(String busca, ContratoStatus status, Pageable pageable) {
+        if (busca != null && !busca.isBlank() && status != null) {
+            return findByBuscaAndStatus("%" + busca.trim().toLowerCase() + "%", status, pageable);
+        } else if (busca != null && !busca.isBlank()) {
+            return findByBusca("%" + busca.trim().toLowerCase() + "%", pageable);
+        } else if (status != null) {
+            return findByStatus(status, pageable);
+        } else {
+            return findAll(pageable);
+        }
+    }
 
     long countByStatus(ContratoStatus status);
 }
-

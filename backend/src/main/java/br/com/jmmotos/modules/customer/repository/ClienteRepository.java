@@ -18,11 +18,28 @@ public interface ClienteRepository extends JpaRepository<Cliente, Long> {
 
     Optional<Cliente> findByCpf(String cpf);
 
+    Page<Cliente> findByStatus(ClienteStatus status, Pageable pageable);
+
     @Query("SELECT c FROM Cliente c WHERE " +
-           "(:busca IS NULL OR LOWER(c.nome) LIKE LOWER(CONCAT('%', :busca, '%')) OR c.cpf LIKE CONCAT('%', :busca, '%') OR c.telefone LIKE CONCAT('%', :busca, '%')) AND " +
-           "(:status IS NULL OR c.status = :status)")
-    Page<Cliente> findWithFilters(@Param("busca") String busca, @Param("status") ClienteStatus status, Pageable pageable);
+           "(LOWER(c.nome) LIKE :busca OR c.cpf LIKE :busca OR c.telefone LIKE :busca)")
+    Page<Cliente> findByBusca(@Param("busca") String busca, Pageable pageable);
+
+    @Query("SELECT c FROM Cliente c WHERE " +
+           "(LOWER(c.nome) LIKE :busca OR c.cpf LIKE :busca OR c.telefone LIKE :busca) AND " +
+           "c.status = :status")
+    Page<Cliente> findByBuscaAndStatus(@Param("busca") String busca, @Param("status") ClienteStatus status, Pageable pageable);
+
+    default Page<Cliente> findWithFilters(String busca, ClienteStatus status, Pageable pageable) {
+        if (busca != null && !busca.isBlank() && status != null) {
+            return findByBuscaAndStatus("%" + busca.trim().toLowerCase() + "%", status, pageable);
+        } else if (busca != null && !busca.isBlank()) {
+            return findByBusca("%" + busca.trim().toLowerCase() + "%", pageable);
+        } else if (status != null) {
+            return findByStatus(status, pageable);
+        } else {
+            return findAll(pageable);
+        }
+    }
 
     long countByStatus(ClienteStatus status);
 }
-
